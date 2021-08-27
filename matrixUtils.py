@@ -6,7 +6,6 @@ def genMatrix(size=1024, value=1):
     """
     Generates a 2d square matrix of the specified size with the specified values
     """
-
     matrix = [[value for col in range(0,size)] for row in range(0,size)]
 
     return matrix
@@ -15,10 +14,31 @@ def genMatrix2(size=1024, value=1):
     """
     Generates a 2d square matrix of the specified size with the specified values
     """
-
     matrix = np.asarray([ np.asarray([value for col in range(0,size)]) for row in range(0,size)])
 
     return matrix
+
+def multiplyMatrix(matrix1, matrix2):
+    # Test for compatibility
+    # Test len of rows for matrix1 and len of cols for matrix2
+    if not len(matrix1[0]) == len(matrix2):
+        return None
+
+    size = len(matrix1)
+    # Create return matrix
+    rtn = genMatrix(size, 0)
+
+    # Assign correct values
+    for i in range(size):
+        for j in range(size):
+            # Calculate sum
+            total = 0
+            for k in range(size):
+                total += matrix1[i][k] * matrix2[k][j]
+
+            rtn[i][j] = total
+
+    return rtn
 
 def printSubarray(matrix, size=10):
     """
@@ -67,8 +87,10 @@ def main():
         help='Size of the 2d matrix to generate')
     parser.add_argument('-v', '--value', default=1, type=int,
         help='The value with which to fill the array with')
-    parser.add_argument('-f', '--filename',
+    parser.add_argument('-f', '--filename', type = str,
         help='The name of the file to save the matrix in (optional)')
+
+    #parser.add_argument('-m', '--multiply', type)
 
     args = parser.parse_args()
 
@@ -81,8 +103,10 @@ def main():
         print(f'Testing file')
         printSubarray(readFromFile(args.filename))
     else:
-        printSubarray(mat)
+        # printSubarray(mat)
+        printSubarray(multiplyMatrix(mat, mat))
 
 if __name__ == '__main__':
     # execute only if run as a script
     main()
+
