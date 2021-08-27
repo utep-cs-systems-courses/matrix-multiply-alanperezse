@@ -6,7 +6,7 @@ def genMatrix(size=1024, value=1):
     """
     Generates a 2d square matrix of the specified size with the specified values
     """
-    matrix = [[value for col in range(0,size)] for row in range(0,size)]
+    matrix = [[value for col in range(size)] for row in range(size)]
 
     return matrix
 
@@ -14,7 +14,7 @@ def genMatrix2(size=1024, value=1):
     """
     Generates a 2d square matrix of the specified size with the specified values
     """
-    matrix = np.asarray([ np.asarray([value for col in range(0,size)]) for row in range(0,size)])
+    matrix = np.asarray([np.asarray([value for col in range(size)]) for row in range(size)])
 
     return matrix
 
@@ -24,18 +24,20 @@ def multiplyMatrix(matrix1, matrix2):
     if not len(matrix1[0]) == len(matrix2):
         return None
 
-    size = len(matrix1)
+    num_rows_1 = len(matrix1)       # Num of rows in matrix 1
+    num_cols_2 = len(matrix2[0])    # Num of cols in matrix 2
+    num_common = len(matrix1[0])    # Num of cols in matrix 1 / rows in matrix 2
+
     # Create return matrix
-    rtn = genMatrix(size, 0)
+    rtn = [[0 for _ in range(num_cols_2)] for _ in range(num_rows_1)]
 
     # Assign correct values
-    for i in range(size):
-        for j in range(size):
+    for i in range(num_rows_1):
+        for j in range(num_cols_2):
             # Calculate sum
             total = 0
-            for k in range(size):
+            for k in range(num_common):
                 total += matrix1[i][k] * matrix2[k][j]
-
             rtn[i][j] = total
 
     return rtn
@@ -46,8 +48,8 @@ def printSubarray(matrix, size=10):
     the matrix
     """
 
-    for row in range(1, 10):
-        for col in range(1, 10):
+    for row in range(min(10, len(matrix))):
+        for col in range(min(10, len(matrix[row]))):
             print(f'{matrix[row][col]} ' , end='')
         print('')
 
@@ -66,7 +68,6 @@ def readFromFile(fileName):
     """
     Reads a matrix from a file
     """
-
     matrix = []
 
     with open(fileName, 'r') as file:
@@ -80,7 +81,6 @@ def main():
     """
     Used for running as a script
     """
-
     parser = argparse.ArgumentParser(description=
         'Generate a 2d matrix and save it to  a file.')
     parser.add_argument('-s', '--size', default=1024, type=int,
@@ -89,12 +89,22 @@ def main():
         help='The value with which to fill the array with')
     parser.add_argument('-f', '--filename', type = str,
         help='The name of the file to save the matrix in (optional)')
-
-    #parser.add_argument('-m', '--multiply', type)
+    parser.add_argument('-m', '--multiply', nargs = 2,
+        help = 'The matrices that are to be multiplied')
 
     args = parser.parse_args()
 
     mat = genMatrix(args.size, args.value)
+
+    if args.multiply is not None:
+        print(args.multiply) # Pring arguments
+        mat1 = genMatrix(size = 3, value = 2)
+        mat2 = genMatrix(size = 3, value = 3)
+        printSubarray(mat1)
+        printSubarray(mat2)
+        mat = multiplyMatrix(mat1, mat2)
+        printSubarray(mat)
+        return
 
     if args.filename is not None:
         print(f'Writing matrix to {args.filename}')
