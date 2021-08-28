@@ -47,7 +47,6 @@ def printSubarray(matrix, size=10):
     Prints the upper left subarray of dimensions size x size of
     the matrix
     """
-
     for row in range(min(10, len(matrix))):
         for col in range(min(10, len(matrix[row]))):
             print(f'{matrix[row][col]} ' , end='')
@@ -57,7 +56,6 @@ def writeToFile(matrix, fileName):
     """
     Writes a matrix out to a file
     """
-
     with open(fileName, 'w') as file:
         for row in matrix:
             for col in row:
@@ -82,39 +80,50 @@ def main():
     Used for running as a script
     """
     parser = argparse.ArgumentParser(description=
-        'Generate a 2d matrix and save it to  a file.')
+        'Create a matrix of specified size and values, or create'
+        'a matrix which is the product of the given matrices,')
+
     parser.add_argument('-s', '--size', default=1024, type=int,
-        help='Size of the 2d matrix to generate')
+        help='Size of the 2d matrix to generate.')
     parser.add_argument('-v', '--value', default=1, type=int,
-        help='The value with which to fill the array with')
-    parser.add_argument('-f', '--filename', type = str,
-        help='The name of the file to save the matrix in (optional)')
+        help='The value with which to fill the array with.')
     parser.add_argument('-m', '--multiply', nargs = 2,
-        help = 'The matrices that are to be multiplied')
+        help = 'Filenames for the matrices to be used.')
+    parser.add_argument('-f', '--filename', type = str,
+        help='The name of the file to save the matrix in (optional).')
 
     args = parser.parse_args()
 
-    mat = genMatrix(args.size, args.value)
-
+    # Create matrix by multiplying
     if args.multiply is not None:
-        print(args.multiply) # Pring arguments
-        mat1 = genMatrix(size = 3, value = 2)
-        mat2 = genMatrix(size = 3, value = 3)
-        printSubarray(mat1)
-        printSubarray(mat2)
+        mat1 = readFromFile(args.multiply[0])
+        mat2 = readFromFile(args.multiply[1])
+
         mat = multiplyMatrix(mat1, mat2)
-        printSubarray(mat)
-        return
 
-    if args.filename is not None:
-        print(f'Writing matrix to {args.filename}')
-        writeToFile(mat, args.filename)
+        # Write if indicated. Always prints
+        if args.filename is not None:
+            print(f'Writing matrix to {args.filename}')
+            writeToFile(mat, args.filename)
 
-        print(f'Testing file')
-        printSubarray(readFromFile(args.filename))
+            print(f'Testing file')
+            printSubarray(readFromFile(args.filename))
+        else:
+            printSubarray(mat)
+
+    # Create matrix by using the getMatrix method
     else:
-        # printSubarray(mat)
-        printSubarray(multiplyMatrix(mat, mat))
+        mat = genMatrix(args.size, args.value)
+
+        # Write if indicated. Always prints
+        if args.filename is not None:
+            print(f'Writing matrix to {args.filename}')
+            writeToFile(mat, args.filename)
+
+            print(f'Testing file')
+            printSubarray(readFromFile(args.filename))
+        else:
+            printSubarray(mat)
 
 if __name__ == '__main__':
     # execute only if run as a script
