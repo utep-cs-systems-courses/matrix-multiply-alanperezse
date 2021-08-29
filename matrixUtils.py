@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import argparse
 import numpy as np
+import time
+
 
 def genMatrix(size=1024, value=1):
     """
@@ -19,6 +21,7 @@ def genMatrix2(size=1024, value=1):
     return matrix
 
 def multiplyMatrix(matrix1, matrix2):
+    t0 = time.time()
     # Test for compatibility
     # Test len of rows for matrix1 and len of cols for matrix2
     if not len(matrix1[0]) == len(matrix2):
@@ -40,6 +43,8 @@ def multiplyMatrix(matrix1, matrix2):
                 total += matrix1[i][k] * matrix2[k][j]
             rtn[i][j] = total
 
+    t1 = time.time()
+    print(f"Time taken to do matrix multiplication: {t1 - t0}")
     return rtn
 
 def printSubarray(matrix, size=10):
@@ -101,6 +106,9 @@ def main():
 
         mat = multiplyMatrix(mat1, mat2)
 
+        if mat is None:
+            raise ValueError("Incompatible matrices")
+
         # Write if indicated. Always prints
         if args.filename is not None:
             print(f'Writing matrix to {args.filename}')
@@ -125,7 +133,12 @@ def main():
         else:
             printSubarray(mat)
 
+
 if __name__ == '__main__':
     # execute only if run as a script
-    main()
+    try:
+        main()
+    except ValueError as e:
+        print(e)
+        print("Exiting the program...")
 

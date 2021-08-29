@@ -8,15 +8,22 @@ Once completed the repository should contain your code,
 a short report, and any instructions needed to run your
 code.
 
-Use options -v or -s if you would like to create a
-matrix of the specified size and value. Integers may
-be entered to denote the value of the values (-v) and
-size (-s) in the matrix.
+###Intructions:
 
-Use option -m if you would like to multiply two matrices
-and obtain their result. The names of the two files from
-which the matrices will be read must be specified.
+You may create a matrix by using the genMatrix method, or
+by performing a matrix multiplication.
 
-Use option -f if you would like to write the resulting
-matrix in either case. The name of the file to which the
-matrix will be written must be specified.
+If you would like to create a matrix by performing a
+matrix multiplication, raise the flag -m or
+--multiplication and pass the name of the files where the
+two matrices to be multiplied are located.
+
+If you would like to create a matrix by using the
+genMatrix method, simply omit the -m flag. The values and
+size of the matrix may be specified using the -v and -s
+flags, respectively (optional).
+
+In either case, if you would like to save the matrix just
+created, use the -f or --filename flags and specify the
+name of the file where the matrix is to be saved 
+(optional).
