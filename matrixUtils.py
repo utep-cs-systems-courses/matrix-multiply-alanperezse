@@ -47,6 +47,34 @@ def multiplyMatrix(matrix1, matrix2):
     print(f"Time taken to do matrix multiplication: {t1 - t0}")
     return rtn
 
+def multiplyMatrix2(matrix1, matrix2):
+    t0 = time.time()
+    # Test for compatibility
+    if not len(matrix1) == len(matrix1[0]) == len(matrix2) == len(matrix2[0]):
+        return None
+
+    size = len(matrix1)       # Size of all sides
+    # Create return matrix
+    rtn = [[0 for _ in range(size)] for _ in range(size)]
+
+
+    step = 16
+
+    for kk in range(0, size, step):
+        for jj in range(0, size, step):
+            for i in range(size):
+               j_end_val = jj + step
+               for j in range(jj, j_end_val):
+                  k_end_val = kk + step
+                  sum = rtn[i][j]
+                  for k in range(kk, k_end_val):
+                    sum = sum + matrix1[i][k] * matrix2[k][j]
+                  rtn[i][j] = sum
+
+    t1 = time.time()
+    print(f"Time taken to do matrix multiplication: {t1 - t0}")
+    return rtn
+
 def printSubarray(matrix, size=10):
     """
     Prints the upper left subarray of dimensions size x size of
@@ -94,20 +122,25 @@ def main():
         help='The value with which to fill the array with.')
     parser.add_argument('-m', '--multiply', nargs = 2,
         help = 'Filenames for the matrices to be used.')
+    parser.add_argument('-a', '--alternative', action='store_true',
+        help = 'Use the alternative multiply algorithm (requires square matrices).')
     parser.add_argument('-f', '--filename', type = str,
         help='The name of the file to save the matrix in (optional).')
 
     args = parser.parse_args()
 
     # Create matrix by multiplying
-    if args.multiply is not None:
+    if args.multiply:
         mat1 = readFromFile(args.multiply[0])
         mat2 = readFromFile(args.multiply[1])
 
-        mat = multiplyMatrix(mat1, mat2)
+        if args.alternative:
+            mat = multiplyMatrix2(mat1, mat2)
+        else:
+            mat = multiplyMatrix(mat1, mat2)
 
         if mat is None:
-            raise ValueError("Incompatible matrices")
+            raise ValueError("Matrices must be compatible, and be squared if the -a flag was raised. Press -h for help")
 
         # Write if indicated. Always prints
         if args.filename is not None:
