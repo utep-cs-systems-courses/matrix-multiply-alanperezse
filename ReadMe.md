@@ -16,7 +16,9 @@ by performing a matrix multiplication.
 If you would like to create a matrix by performing a
 matrix multiplication, raise the flag -m or
 --multiplication and pass the name of the files where the
-two matrices to be multiplied are located.
+two matrices to be multiplied are located. You may use
+the tile algorithm by raising the -a or --alternative
+flag (optional).
 
 If you would like to create a matrix by using the
 genMatrix method, simply omit the -m flag. The values and
