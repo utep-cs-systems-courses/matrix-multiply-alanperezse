@@ -55,12 +55,13 @@ def multiplyMatrixParallel(matrix1, matrix2):
     num_common = len(matrix1[0])    # Num of cols in matrix 1 / rows in matrix 2
 
     # Create return matrix
-    rtn = pymp.shared.list([pymp.shared.list([0 for _ in range(num_cols_2)]) for _ in range(num_rows_1)])
+    #rtn = [[0 for _ in range(num_cols_2)] for _ in range(num_rows_1)]
+    rtn = pymp.shared.list([[0 for _ in range(num_cols_2)] for _ in range(num_rows_1)])
 
     # Assign correct values
     with pymp.Parallel() as p:
         for i in p.range(num_rows_1):
-            for j in range(num_cols_2):
+            for j in p.range(num_cols_2):
                 # Calculate sum
                 for k in range(num_common):
                     rtn[i][j] += matrix1[i][k] * matrix2[k][j]

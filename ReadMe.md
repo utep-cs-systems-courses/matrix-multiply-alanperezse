@@ -43,3 +43,16 @@ the block or parallel algorithms by raising the -a or -p flag
 respectively (you shouldn't raise both flags). The size of
 the repeated matrices to be multiplied may be specified by
 the -s flag.
+
+### Issues:
+Previously, the block algorithm wouldn't work for arrays of certain size. By using a min() on one of the loops, the issue was fixed. Currently, the method cannot accept arrays that are not squared.
+
+As of now, the parallel part of the program is not running as expected. It is taking longer than the linearized version.
+
+### Time:
+The linearized version of the matrix multiplication, and the block algorithm were implemented in less than a day. The logic and the structure of how the program handles flags took more due to the desire to make one file do too much.
+
+The parallel algorithm is still in progress. I have been working on it for a little over 3 hours now.
+
+### Observations:
+The algorithm for matrix multiplication was initially unnecessarily complicated. I have since made it more concise and readable.
