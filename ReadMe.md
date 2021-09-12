@@ -8,7 +8,12 @@ Once completed the repository should contain your code,
 a short report, and any instructions needed to run your
 code.
 
-###Intructions:
+# Report:
+
+
+### Intructions:
+
+There are two important files in the directory..
 
 You may create a matrix by using the genMatrix method, or
 by performing a matrix multiplication.
@@ -27,5 +32,5 @@ flags, respectively (optional).
 
 In either case, if you would like to save the matrix just
 created, use the -f or --filename flags and specify the
-name of the file where the matrix is to be saved 
+name of the file where the matrix is to be saved
 (optional).

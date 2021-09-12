@@ -2,6 +2,7 @@
 import argparse
 import numpy as np
 import time
+import pymp
 
 
 def genMatrix(size=1024, value=1):
@@ -21,7 +22,6 @@ def genMatrix2(size=1024, value=1):
     return matrix
 
 def multiplyMatrix(matrix1, matrix2):
-    t0 = time.time()
     # Test for compatibility
     # Test len of rows for matrix1 and len of cols for matrix2
     if not len(matrix1[0]) == len(matrix2):
@@ -38,17 +38,37 @@ def multiplyMatrix(matrix1, matrix2):
     for i in range(num_rows_1):
         for j in range(num_cols_2):
             # Calculate sum
-            total = 0
             for k in range(num_common):
-                total += matrix1[i][k] * matrix2[k][j]
-            rtn[i][j] = total
+                rtn[i][j] += matrix1[i][k] * matrix2[k][j]
 
-    t1 = time.time()
-    print(f"Time taken to do matrix multiplication: {t1 - t0}")
     return rtn
 
-def multiplyMatrix2(matrix1, matrix2):
-    t0 = time.time()
+
+def multiplyMatrixParallel(matrix1, matrix2):
+    # Test for compatibility
+    # Test len of rows for matrix1 and len of cols for matrix2
+    if not len(matrix1[0]) == len(matrix2):
+        return None
+
+    num_rows_1 = len(matrix1)       # Num of rows in matrix 1
+    num_cols_2 = len(matrix2[0])    # Num of cols in matrix 2
+    num_common = len(matrix1[0])    # Num of cols in matrix 1 / rows in matrix 2
+
+    # Create return matrix
+    rtn = pymp.shared.list([pymp.shared.list([0 for _ in range(num_cols_2)]) for _ in range(num_rows_1)])
+
+    # Assign correct values
+    with pymp.Parallel() as p:
+        for i in p.range(num_rows_1):
+            for j in range(num_cols_2):
+                # Calculate sum
+                for k in range(num_common):
+                    rtn[i][j] += matrix1[i][k] * matrix2[k][j]
+
+    return rtn
+
+
+def multiplyMatrixBlock(matrix1, matrix2):
     # Test for compatibility
     if not len(matrix1) == len(matrix1[0]) == len(matrix2) == len(matrix2[0]):
         return None
@@ -64,16 +84,15 @@ def multiplyMatrix2(matrix1, matrix2):
         for jj in range(0, size, step):
             for i in range(size):
                j_end_val = jj + step
-               for j in range(jj, j_end_val):
+               for j in range(jj, min(j_end_val, size)):
                   k_end_val = kk + step
                   sum = rtn[i][j]
-                  for k in range(kk, k_end_val):
+                  for k in range(kk, min(k_end_val, size)):
                     sum = sum + matrix1[i][k] * matrix2[k][j]
                   rtn[i][j] = sum
 
-    t1 = time.time()
-    print(f"Time taken to do matrix multiplication: {t1 - t0}")
     return rtn
+
 
 def printSubarray(matrix, size=10):
     """
@@ -108,6 +127,7 @@ def readFromFile(fileName):
 
     return matrix
 
+
 def main():
     """
     Used for running as a script
@@ -126,6 +146,8 @@ def main():
         help = 'Use the alternative multiply algorithm (requires square matrices).')
     parser.add_argument('-f', '--filename', type = str,
         help='The name of the file to save the matrix in (optional).')
+    parser.add_argument('-p', '--parallel', action='store_true',
+        help = 'Use the parallel algorithms')
 
     args = parser.parse_args()
 
@@ -134,10 +156,15 @@ def main():
         mat1 = readFromFile(args.multiply[0])
         mat2 = readFromFile(args.multiply[1])
 
-        if args.alternative:
-            mat = multiplyMatrix2(mat1, mat2)
+        t0 = time.clock_gettime(time.CLOCK_MONOTONIC_RAW)
+        if args.parallel:
+            mat = multiplyMatrixParallel(mat1, mat2)
+        elif args.alternative:
+            mat = multiplyMatrixBlock(mat1, mat2)
         else:
             mat = multiplyMatrix(mat1, mat2)
+        t1 = time.clock_gettime(time.CLOCK_MONOTONIC_RAW)
+        print(f"Time taken to do matrix multiplication: {t1 - t0}")
 
         if mat is None:
             raise ValueError("Matrices must be compatible, and be squared if the -a flag was raised. Press -h for help")
@@ -174,4 +201,3 @@ if __name__ == '__main__':
     except ValueError as e:
         print(e)
         print("Exiting the program...")
-
