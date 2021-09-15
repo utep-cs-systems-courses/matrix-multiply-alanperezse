@@ -69,9 +69,13 @@ The parallel algorithm has taken around 3 hours to do due to errors with the res
 
 ### Performance measurements:
 The following measurements were done by repeatedly multiplying a square matrix with size of 10, 10 times.
+
 1 thread:   0.3564 seconds
+
 2 threads:  0.3120 seconds
+
 4 threads:  0.4288 seconds
+
 8 threads:  0.4165 seconds
 
 ### Analysis:
@@ -82,9 +86,12 @@ my lack of understanding of how nested lists are handled by the pymp.shared.list
 
 ### Observations:
 The algorithm for matrix multiplication was initially unnecessarily complicated. I have since made it more concise and readable.
+
 The block algorithm currently only works for square matrices.
+
 The parallel algorihtm outputs the correct results, although is slower than the linear algorithm.
 
 ### Output from cpuInfoDump program:
 model name      : Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz
+
       4      36     216

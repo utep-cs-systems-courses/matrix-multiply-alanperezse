@@ -65,7 +65,6 @@ def multiplyMatrixParallel(matrix1, matrix2):
                 # Calculate sum
                 for k in range(num_common):
                     rtn[i][j] += matrix1[i][k] * matrix2[k][j]
-
     return rtn
 
 
