@@ -56,7 +56,7 @@ def multiplyMatrixParallel(matrix1, matrix2):
 
     # Create return matrix
     #rtn = [[0 for _ in range(num_cols_2)] for _ in range(num_rows_1)]
-    rtn = pymp.shared.list([pymp.shared.list([0 for _ in range(num_cols_2)]) for _ in range(num_rows_1)])
+    rtn = [pymp.shared.list([0 for _ in range(num_cols_2)]) for _ in range(num_rows_1)]
 
     # Assign correct values
     with pymp.Parallel() as p:
