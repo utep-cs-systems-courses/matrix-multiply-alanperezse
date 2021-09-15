@@ -68,10 +68,21 @@ The linearized version of the matrix multiplication, and the block algorithm wer
 The parallel algorithm has taken around 3 hours to do due to errors with the results.
 
 ### Performance measurements:
-
+The following measurements were done by repeatedly multiplying a square matrix with size of 10, 10 times.
+1 thread:   2.7125 seconds
+2 threads:  2.2495 seconds
+4 threads:  2.8777 seconds
+8 threads:  2.9362 seconds
 
 ### Analysis:
-
+The run with 2 threads seems to be the quickest. Since we have more than 8 processes, I would have expected
+the run with 8 threads to be the most efficient, but data seems to indicate otherwise. There also seems to
+be some other issues since the linear algorithm is much faster than this results.
 
 ### Observations:
 The algorithm for matrix multiplication was initially unnecessarily complicated. I have since made it more concise and readable.
+
+
+### Output from cpuInfoDump program:
+model name      : Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz
+      4      36     216
