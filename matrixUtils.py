@@ -13,6 +13,7 @@ def genMatrix(size=1024, value=1):
 
     return matrix
 
+
 def genMatrix2(size=1024, value=1):
     """
     Generates a 2d square matrix of the specified size with the specified values
@@ -20,6 +21,7 @@ def genMatrix2(size=1024, value=1):
     matrix = np.asarray([np.asarray([value for col in range(size)]) for row in range(size)])
 
     return matrix
+
 
 def multiplyMatrix(matrix1, matrix2):
     # Test for compatibility
@@ -54,17 +56,14 @@ def multiplyMatrixParallel(matrix1, matrix2):
     num_cols_2 = len(matrix2[0])    # Num of cols in matrix 2
     num_common = len(matrix1[0])    # Num of cols in matrix 1 / rows in matrix 2
 
-    # Create return matrix
-    #rtn = [[0 for _ in range(num_cols_2)] for _ in range(num_rows_1)]
-    rtn = [pymp.shared.list([0 for _ in range(num_cols_2)]) for _ in range(num_rows_1)]
+    rtn = pymp.shared.array((num_rows_1, num_cols_2), dtype= int)
 
-    # Assign correct values
     with pymp.Parallel() as p:
+        print(f'Thread: {p.thread_num} of {p.num_threads}')
         for i in p.range(num_rows_1):
             for j in range(num_cols_2):
-                # Calculate sum
-                for k in range(num_common):
-                    rtn[i][j] += matrix1[i][k] * matrix2[k][j]
+                rtn[i][j] = sum(matrix1[i][k] * matrix2[k][j] for k in range(num_common))
+
     return rtn
 
 
@@ -113,6 +112,7 @@ def writeToFile(matrix, fileName):
             for col in row:
                 file.write(f'{col} ')
             file.write('\n')
+
 
 def readFromFile(fileName):
     """

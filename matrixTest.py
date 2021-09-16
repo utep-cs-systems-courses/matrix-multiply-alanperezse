@@ -4,16 +4,23 @@ import time
 
 
 def testMultBlock():
-    mat1 = genMatrix(400, 1)
-    mat2 = genMatrix(400, 1)
+    mat = genMatrix(400, 1)
 
-    t0 = time.clock_gettime(time.CLOCK_MONOTONIC_RAW)
-    mat = multiplyMatrixBlock(mat1, mat2)
-    t1 = time.clock_gettime(time.CLOCK_MONOTONIC_RAW)
-    print(f'Time taken to perform matrix block multiplication: {t1 - t0}')
+    mat = multiplyMatrixBlock(mat, mat)
     for i in range(400):
         for j in range(400):
             assert mat[i][j] == 400
+    print('Matrix block multiplication successful')
+
+
+def testParallelMatrix():
+    mat = genMatrix(400, 1)
+    mat = multiplyMatrixParallel(mat, mat)
+    for i in range(400):
+        for j in range(400):
+            assert mat[i][j] == 400
+    print('Parallel multiplication successful')
+
 
 def testMultMatrix():
     mat1 = [[1, 2, 3],
@@ -30,7 +37,15 @@ def testMultMatrix():
         for j in range(len(mat[i])):
             assert mat_expected[i][j] == mat[i][j]
 
+    mat = genMatrix(400, 1)
+
+    mat = multiplyMatrixBlock(mat, mat)
+    for i in range(400):
+        for j in range(400):
+            assert mat[i][j] == 400
+
     print('Regular multiplication successful')
+
 
 parser = argparse.ArgumentParser(description=
         'Tests for the different methods of the matrixUtils module.'
@@ -72,4 +87,5 @@ if args.iterations >= 0:
 else:
     testMultMatrix()
     testMultBlock()
+    testParallelMatrix()
     print('All tests successful')

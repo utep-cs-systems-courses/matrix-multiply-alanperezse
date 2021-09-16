@@ -9,6 +9,8 @@ a short report, and any instructions needed to run your
 code.
 
 # Report:
+    Student: Alan Perez
+    CS 4175 12PM
 
 ### Intructions:
 There are two important files in the directory,
@@ -60,37 +62,46 @@ the -s flag.
 ### Issues:
 Previously, the block algorithm wouldn't work for arrays of certain size. By using a min() on one of the loops, the issue was fixed. Currently, the method cannot accept arrays that are not squared.
 
-As of now, the parallel part of the program is not running as expected. It is taking longer than the linearized version, although it is returning the right results.
+The major issue with the parallel algorithm was how to properly make use of the pymp.Parallel for nested lists. The
+problem was fixed by making use of the pymp.shared.array() method that can create a 2D numpy array.
+
+As of now, the parallel part of the program is giving back the right results, although it is taking longer than the linearized version. This might be a Virtual Machine issue.
+
 
 ### Time:
 The linearized version of the matrix multiplication, and the block algorithm were implemented in less than a day. The logic and the structure of how the program handles flags took more due to the desire to make one file do too much.
 
-The parallel algorithm has taken around 3 hours to do due to errors with the results.
+The parallel algorithm has taken around 4 hours to do due to errors with the results. It has finally been completed.
 
 ### Performance measurements:
 The following measurements are an average of repeatedly multiplying a square matrix
-with size of 35 by itself, 10 times.
+with size of 350 by itself, 10 times.
 
-1 thread:   13.1359 seconds
+1 thread:   11.0525 seconds
 
-2 threads:  12.6375 seconds
+2 threads:  10.4618 seconds
 
-4 threads:  13.7888 seconds
+4 threads:  5.7258 seconds
 
-8 threads:  13.4846 seconds
+8 threads:  5.9441 seconds
+
 
 ### Analysis:
-The run with 2 threads seems to be the quickest. Since we have more than 8 processes, I would have expected
-the run with 8 threads to be the most efficient, but data seems to indicate otherwise. There also seems to
-be some other issues since the linear algorithm is much faster than this results. Those issues stem from
-my lack of understanding of how nested lists are handled when in parallel.
+The run with 4 threads seems to be the quickest. Although we have more than 8 processes (matrix multiplications
+algorithm does parallelization over the rows of matrix1), it seems that the additional overhead of those processes
+does more damage than the benefit from the extra threads. This might change if we were to use bigger arrays, since
+I did notice when testing even smaller arrays that the most efficient number of threads was 1 or 2.
+
 
 ### Observations:
 The algorithm for matrix multiplication was initially unnecessarily complicated. I have since made it more concise and readable.
 
 The block algorithm currently only works for square matrices.
 
-The parallel algorihtm outputs the correct results, although is slower than the linear algorithm.
+The parallel algorihtm outputs the correct results, although is slower than the linear algorithm. The number of
+threads that make the algorithm more efficient depends on the size of the array (due to the overhead of the
+parallel process). Bigger arrays tend to perform better with more cores.
+
 
 ### Output from cpuInfoDump program:
 model name      : Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz
